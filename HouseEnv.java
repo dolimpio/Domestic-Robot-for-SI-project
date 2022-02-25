@@ -15,7 +15,7 @@ public class HouseEnv extends Environment {
 
     public static final Literal af = Literal.parseLiteral("at(robot,fridge)");
     public static final Literal ao = Literal.parseLiteral("at(robot,owner)");
-	public static final Literal as = Literal.parseLiteral("at(robot,supermarket)");
+	public static final Literal ad = Literal.parseLiteral("at(robot,delivery)");
 	
     static Logger logger = Logger.getLogger(HouseEnv.class.getName());
 
@@ -38,7 +38,7 @@ public class HouseEnv extends Environment {
         // clear the percepts of the agents
         clearPercepts("robot");
         clearPercepts("owner");
-		clearPercepts("supermarket");
+		clearPercepts("supermarket");                                          
 		
         // get the robot location
         Location lRobot = model.getAgPos(0);
@@ -50,14 +50,14 @@ public class HouseEnv extends Environment {
         if (lRobot.x == model.lOwner.x-1 && lRobot.y == model.lOwner.y-1) {
             addPercept("robot", ao);
         }
-		if (lRobot.equals(model.lSuperMarket)) {
-            addPercept("robot", as);
+		if (lRobot.equals(model.lDelivery)) {
+            addPercept("robot", ad);
         }
-        // add beer "status" the percepts
+        // add beer "status" the percepts  (MODIFICAR PARA QUE VAYA A LA ZONA DE ENTREGA )   
         if (model.fridgeOpen) {
             addPercept("robot", Literal.parseLiteral("stock(beer,"+model.availableBeers+")"));
         }
-		
+		                                                                 
         if (model.sipCount > 0) {
             addPercept("robot", hob);
             addPercept("owner", hob);
@@ -69,21 +69,21 @@ public class HouseEnv extends Environment {
     public boolean executeAction(String ag, Structure action) {
 		
         System.out.println("["+ag+"] doing: "+action);
-        boolean result = false;
+        boolean result = false; 
 		
 		if (action.getFunctor().equals("move_towards")) {
 			
 			String l = action.getTerm(0).toString();
 			Location dest = null;
-			
+			               
 			if (l.equals("fridge")) {
 				dest = model.lFridge;
-			} 
+			}                             
 			else if (l.equals("owner")) {
 				dest = model.lOwner;
 			} 
-			else if(l.equals("supermarket")){
-				dest = model.lSuperMarket;
+			else if(l.equals("delivery")){
+				dest = model.lDelivery;
 			}
 			
 			try {

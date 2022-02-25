@@ -44,9 +44,9 @@ public class HouseView extends GridWorldView {
             drawString(g, x, y, defaultFont, o);
             break;
 			
-		case HouseModel.SUPERMARKET:
+		case HouseModel.DELIVERYZONE:
 
-            if (lRobot.equals(hmodel.lSuperMarket)) { // Se pone de color amarillo cuando se encuentra en supermarket
+            if (lRobot.equals(hmodel.lDelivery)) { // Se pone de color amarillo cuando se encuentra en supermarket
                 super.drawAgent(g, x, y, Color.cyan, -1); //Por que todos los IDs son -1?
             }
             g.setColor(Color.black);

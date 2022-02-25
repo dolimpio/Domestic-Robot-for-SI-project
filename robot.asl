@@ -31,7 +31,8 @@ same(X,X).
 
 +!bring(owner,beer)[source(Ag)]
    :  not available(beer,fridge) & (same(Ag,owner)|same(Ag,self))
-   <- .send(supermarket, achieve, order(beer,3));              
+   <- //!go_at(robot,delivery);
+   .send(supermarket, achieve, order(beer,3));              
       !go_at(robot,fridge). // go to fridge and wait there.
                                                                                                                                                    
 +!bring(owner,beer)
@@ -48,8 +49,8 @@ same(X,X).
 +!go_at(robot,P) : at(robot,P) <- true.
 +!go_at(robot,P) : not at(robot,P) 
   <- move_towards(P);
-     !go_at(robot,P).
-
+     !go_at(robot,P). 
+            
 // when the supermarket makes a delivery, try the 'has' goal again
 +delivered(beer,_Qtd,_OrderId)[source(supermarket)]                                          
   :  true                      

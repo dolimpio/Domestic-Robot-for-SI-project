@@ -2,8 +2,8 @@
 
 !get(beer).   // initial goal: get a beer
 !check_bored. // initial goal: verify whether I am getting bored
-
-+!get(beer) : true
+      
++!get(beer) : true                                             
    <- .send(robot, achieve, bring(owner,beer)).
 
 +has(owner,beer) : true
@@ -12,7 +12,7 @@
    <- !get(beer).
                                                                                                                                                                  
 // if I have not beer finish, in other case while I have beer, sip
-+!drink(beer) : not has(owner,beer) //Why finish? The goal is still there right?
++!drink(beer) : not has(owner,beer) //Why finish? The goal is still there right? DUDA
    <- true.
 +!drink(beer) //: has(owner,beer)
    <- sip(beer);

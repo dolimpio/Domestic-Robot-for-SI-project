@@ -7,7 +7,7 @@ public class HouseModel extends GridWorldModel {
     // constants for the grid objects
     public static final int FRIDGE = 16;
     public static final int OWNER  = 32;
-	public static final int SUPERMARKET = 64;
+	public static final int DELIVERYZONE = 64;
 	
     // the grid size
     public static final int GSize = 7;
@@ -20,7 +20,7 @@ public class HouseModel extends GridWorldModel {
 	int receivedBeers = 0; // how many beers are in the "Deliver zone" (Recogida)
                                                                                                                                      
     Location lFridge = new Location(0,0);
-	Location lSuperMarket = new Location(1,0);
+	Location lDelivery = new Location(1,0);
     Location lOwner  = new Location(GSize-1,GSize-1);
 
     public HouseModel() {
@@ -32,7 +32,7 @@ public class HouseModel extends GridWorldModel {
         setAgPos(0, GSize/2, GSize/2);
 
         // initial location of fridge, owner and supermarket
-		add(SUPERMARKET, lSuperMarket);
+		add(DELIVERYZONE, lDelivery);
         add(FRIDGE, lFridge);
         add(OWNER, lOwner);
     }
@@ -66,7 +66,7 @@ public class HouseModel extends GridWorldModel {
 
         // repaint the fridge and owner locations
         if (view != null) {
-			view.update(lSuperMarket.x,lSuperMarket.y);
+			view.update(lDelivery.x,lDelivery.y);
             view.update(lFridge.x,lFridge.y);
             view.update(lOwner.x,lOwner.y);
         }
