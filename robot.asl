@@ -11,12 +11,13 @@ too_much(B) :-
    .count(consumed(YY,MM,DD,_,_,_,B),QtdB) &                                 
    limit(B,Limit) &
    QtdB > Limit.
-              
+
+same(X,X).
                   
 /* Plans */                                                        
                                       
-+!bring(owner,beer)[source(owner)] 
-   :  available(beer,fridge) & not too_much(beer) 
++!bring(owner,beer)[source(Ag)] 
+   :  available(beer,fridge) & not too_much(beer) & (same(Ag,owner)|same(Ag,self))
    <- !go_at(robot,fridge);
       open(fridge); 
       get(beer);
@@ -28,13 +29,13 @@ too_much(B) :-
       .date(YY,MM,DD); .time(HH,NN,SS);
       +consumed(YY,MM,DD,HH,NN,SS,beer).
 
-+!bring(owner,beer)[source(owner)]
-   :  not available(beer,fridge)
++!bring(owner,beer)[source(Ag)]
+   :  not available(beer,fridge) & (same(Ag,owner)|same(Ag,self))
    <- .send(supermarket, achieve, order(beer,3));              
       !go_at(robot,fridge). // go to fridge and wait there.
                                                                                                                                                    
-+!bring(owner,beer)[source(owner)]
-   :  too_much(beer) & limit(beer,L)
++!bring(owner,beer)
+   :  too_much(beer) & limit(beer,L) 
    <- .concat("The Department of Health does not allow me to give you more than ", L,                                                      
               " beers a day! I am very sorry about that!",M);
       .send(owner,tell,msg(M)).
@@ -53,7 +54,10 @@ too_much(B) :-
 +delivered(beer,_Qtd,_OrderId)[source(supermarket)]                                          
   :  true                      
   <- +available(beer,fridge);
+  	.print("Got the delivery! Thanks!!!");
+  	.send(supermarket, tell, gotOrder(OrderId));
      !bring(owner,beer).
+	 
                                                                                                                                                                 
 // when the fridge is opened, the beer stock is perceived
 // and thus the available belief is updated

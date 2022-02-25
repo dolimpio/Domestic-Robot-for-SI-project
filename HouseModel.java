@@ -14,8 +14,10 @@ public class HouseModel extends GridWorldModel {
 
     boolean fridgeOpen   = false; // whether the fridge is open
     boolean carryingBeer = false; // whether the robot is carrying beer
+	boolean onDeliver = false;
     int sipCount        = 0; // how many sip the owner did
     int availableBeers  = 3; // how many beers are available
+	int receivedBeers = 0; // how many beers are in the "Deliver zone" (Recogida)
                                                                                                                                      
     Location lFridge = new Location(0,0);
 	Location lSuperMarket = new Location(1,0);
@@ -34,7 +36,7 @@ public class HouseModel extends GridWorldModel {
         add(FRIDGE, lFridge);
         add(OWNER, lOwner);
     }
-
+	
     boolean openFridge() {
         if (!fridgeOpen) {
             fridgeOpen = true;

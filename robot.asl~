@@ -1,26 +1,26 @@
-/* Initial beliefs and rules */
-
+/* Initial beliefs and rules */ 
+                           
 // initially, I believe that there is some beer in the fridge
-available(beer,fridge).
+available(beer,fridge).  
 
 // my owner should not consume more than 10 beers a day :-)
 limit(beer,5).
-
+     
 too_much(B) :-
    .date(YY,MM,DD) &
-   .count(consumed(YY,MM,DD,_,_,_,B),QtdB) &
+   .count(consumed(YY,MM,DD,_,_,_,B),QtdB) &                                 
    limit(B,Limit) &
    QtdB > Limit.
-
-
-/* Plans */
-
-+!bring(owner,beer)[source(owner)]
-   :  available(beer,fridge) & not too_much(beer)
+              
+                  
+/* Plans */                                                        
+                                      
++!bring(owner,beer)[source(owner)] 
+   :  available(beer,fridge) & not too_much(beer) 
    <- !go_at(robot,fridge);
-      open(fridge);
+      open(fridge); 
       get(beer);
-      close(fridge);
+      close(fridge); 
       !go_at(robot,owner);
       hand_in(beer);
       ?has(owner,beer);
@@ -30,9 +30,7 @@ too_much(B) :-
 
 +!bring(owner,beer)[source(owner)]
    :  not available(beer,fridge)
-   <- .send(supermarket, achieve, order(beer,3));
-   	  //9!go_at(robot,supermarket);
-                     
+   <- .send(supermarket, achieve, order(beer,3));              
       !go_at(robot,fridge). // go to fridge and wait there.
                                                                                                                                                    
 +!bring(owner,beer)[source(owner)]
