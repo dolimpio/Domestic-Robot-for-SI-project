@@ -50,9 +50,10 @@ same(X,X).
 	<- !go_at(robot,owner);
 		pick_trash(can);
 		!go_at(robot, trash);
-		throw_trash(can).
+		throw_trash(can);
+		-has(owner,trash).        
                                                                                           
-+!go_at(robot,P) : at(robot,P) <- true.
++!go_at(robot,P) : at(robot,P) <- true.                                                                                                                          
 +!go_at(robot,P) : not at(robot,P) 
   <- move_towards(P);
      !go_at(robot,P). 

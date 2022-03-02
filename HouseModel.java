@@ -20,12 +20,12 @@ public class HouseModel extends GridWorldModel {
 	boolean hasTrash = false; //whether the owner has a trash can
     int sipCount        = 0; // how many sip the owner did
     int availableBeers  = 3; // how many beers are available
-	int numberCans = 0; 
+	int numberTrashOwner = 0; 
 	
                                                                                                         
     Location lFridge = new Location(0,0);
 	Location lDelivery = new Location(1,0);
-	Location lTrash = new Location(0,3);                                   
+	Location lTrash = new Location(0,6);                                   
     Location lOwner  = new Location(GSize-1,GSize-1);
 
     public HouseModel() {
@@ -75,9 +75,18 @@ public class HouseModel extends GridWorldModel {
 			view.update(lDelivery.x,lDelivery.y);
             view.update(lFridge.x,lFridge.y);
             view.update(lOwner.x,lOwner.y);
+			view.update(lTrash.x,lTrash.y);                
         }
         return true;
     }
+	
+	/*boolean isAdjacent(Location l1, Location l2){
+		if ((l1.x == l2.x+1 && l1.y == l2.y+1) ||
+		(l1.x == l2.x+1 && l1.y == l2.y+1)||
+		(l1.x == l2.x+1 && l1.y == l2.y+1)){
+			return true;                      
+		}
+	} */      
 
     boolean getBeer() {
         if (fridgeOpen && availableBeers > 0 && !carryingBeer) {
@@ -101,8 +110,6 @@ public class HouseModel extends GridWorldModel {
     boolean handInBeer() {
         if (carryingBeer) {
             sipCount = 10;
-			numberCans++;
-			hasTrash = true;
             carryingBeer = false; 
             if (view != null)
                 view.update(lOwner.x,lOwner.y);
@@ -115,6 +122,10 @@ public class HouseModel extends GridWorldModel {
     boolean sipBeer() {
         if (sipCount > 0) {
             sipCount--;
+			if (sipCount == 0){
+				numberTrashOwner++;
+				hasTrash = true; 
+			}
             if (view != null)
                 view.update(lOwner.x,lOwner.y);		
             return true;
@@ -126,6 +137,7 @@ public class HouseModel extends GridWorldModel {
 	boolean pickTrash(){
 		if(hasTrash){
 			hasTrash = false;
+			numberTrashOwner = 0; 
 			carryingTrash = true;
 		return true;
 		}else{                    
@@ -136,7 +148,7 @@ public class HouseModel extends GridWorldModel {
 	boolean throwTrash(){
 		if(carryingTrash){
 			carryingTrash = false;
-			numberCans = 0;
+
 			return true;
 		}else{
 			return false;

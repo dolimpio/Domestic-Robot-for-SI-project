@@ -1,6 +1,7 @@
 import jason.asSyntax.*;
 import jason.environment.Environment;
 import jason.environment.grid.Location;
+import jason.environment.grid.Area;
 import java.util.logging.Logger;
 
 public class HouseEnv extends Environment {
@@ -20,6 +21,7 @@ public class HouseEnv extends Environment {
     public static final Literal af = Literal.parseLiteral("at(robot,fridge)");
     public static final Literal ao = Literal.parseLiteral("at(robot,owner)");
 	public static final Literal ad = Literal.parseLiteral("at(robot,delivery)");
+	public static final Literal at = Literal.parseLiteral("at(robot,trash)");
 	
     static Logger logger = Logger.getLogger(HouseEnv.class.getName());
 
@@ -40,21 +42,28 @@ public class HouseEnv extends Environment {
     /** creates the agents percepts based on the HouseModel */
     void updatePercepts() {
         // clear the percepts of the agents
-        clearPercepts("robot");
+        clearPercepts("robot");                                               
         clearPercepts("owner");
 		clearPercepts("supermarket");                                          
 		
         // get the robot location
         Location lRobot = model.getAgPos(0);
-
+		Area ownerArea = new Area​( 5,  5,  6,  6);
+		Area fridgeArea = new Area​( 0,  0,  1,  1);
+		Area trashArea = new Area​( 0,  5,  1,  6);
+		Area deliveryArea = new Area​( 0,  0,  2,  1);
+                   
         // add agent location to its percepts
-        if (lRobot.x == model.lFridge.x+1 && lRobot.y == model.lFridge.y+1) {
+        if (fridgeArea.contains​(lRobot)) {               
             addPercept("robot", af);
         }
-        if (lRobot.x == model.lOwner.x-1 && lRobot.y == model.lOwner.y-1) {
+        if (ownerArea.contains​(lRobot)) {
             addPercept("robot", ao);
         }
-		if (lRobot.equals(model.lDelivery)) {
+		if (trashArea.contains​(lRobot)) {
+			addPercept("robot", at);
+		}                                                                    
+		if (deliveryArea.contains​(lRobot)) {                                  
             addPercept("robot", ad);
         }
         // add beer "status" the percepts   
@@ -67,10 +76,10 @@ public class HouseEnv extends Environment {
             addPercept("owner", hob);
         }
 		
-		if(model.hasTrash & model.numberCans > 0){
+		if(model.hasTrash & model.numberTrashOwner > 0){   
 			addPercept("robot", hot);
 		}
-                          
+                                                                   
     }
 
 
