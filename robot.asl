@@ -42,9 +42,15 @@ same(X,X).
       .send(owner,tell,msg(M)).
 
 -!bring(_,_)
-   :  true
+   :  true                                                                   
    <- .current_intention(I);
       .print("Failed to achieve goal '!has(_,_)'. Current intention is: ",I).
+	  
++has(owner,trash) : true //Hay que buscar contexto adecuado
+	<- !go_at(robot,owner);
+		pick_trash(can);
+		!go_at(robot, trash);
+		throw_trash(can).
                                                                                           
 +!go_at(robot,P) : at(robot,P) <- true.
 +!go_at(robot,P) : not at(robot,P) 

@@ -8,19 +8,24 @@ public class HouseModel extends GridWorldModel {
     public static final int FRIDGE = 16;
     public static final int OWNER  = 32;
 	public static final int DELIVERYZONE = 64;
+	public static final int TRASH = 128;
 	
     // the grid size
     public static final int GSize = 7;
 
-    boolean fridgeOpen   = false; // whether the fridge is open
+    boolean fridgeOpen   = false; // whethmer the fridge is open
     boolean carryingBeer = false; // whether the robot is carrying beer
+	boolean carryingTrash = false;
 	boolean onDeliver = false;
+	boolean hasTrash = false; //whether the owner has a trash can
     int sipCount        = 0; // how many sip the owner did
     int availableBeers  = 3; // how many beers are available
-	int receivedBeers = 0; // how many beers are in the "Deliver zone" (Recogida)
-                                                                                                                                     
+	int numberCans = 0; 
+	
+                                                                                                        
     Location lFridge = new Location(0,0);
 	Location lDelivery = new Location(1,0);
+	Location lTrash = new Location(0,3);                                   
     Location lOwner  = new Location(GSize-1,GSize-1);
 
     public HouseModel() {
@@ -33,6 +38,7 @@ public class HouseModel extends GridWorldModel {
 
         // initial location of fridge, owner and supermarket
 		add(DELIVERYZONE, lDelivery);
+		add(TRASH, lTrash);
         add(FRIDGE, lFridge);
         add(OWNER, lOwner);
     }
@@ -95,7 +101,9 @@ public class HouseModel extends GridWorldModel {
     boolean handInBeer() {
         if (carryingBeer) {
             sipCount = 10;
-            carryingBeer = false;
+			numberCans++;
+			hasTrash = true;
+            carryingBeer = false; 
             if (view != null)
                 view.update(lOwner.x,lOwner.y);
             return true;
@@ -108,10 +116,30 @@ public class HouseModel extends GridWorldModel {
         if (sipCount > 0) {
             sipCount--;
             if (view != null)
-                view.update(lOwner.x,lOwner.y);
+                view.update(lOwner.x,lOwner.y);		
             return true;
-        } else {
+        } else { 
             return false;
         }
     }
+
+	boolean pickTrash(){
+		if(hasTrash){
+			hasTrash = false;
+			carryingTrash = true;
+		return true;
+		}else{                    
+			return false;
+		}
+	}
+
+	boolean throwTrash(){
+		if(carryingTrash){
+			carryingTrash = false;
+			numberCans = 0;
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

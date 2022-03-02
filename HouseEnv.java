@@ -12,7 +12,11 @@ public class HouseEnv extends Environment {
     public static final Literal hb  = Literal.parseLiteral("hand_in(beer)");
     public static final Literal sb  = Literal.parseLiteral("sip(beer)");
     public static final Literal hob = Literal.parseLiteral("has(owner,beer)");
-
+	
+    public static final Literal pt = Literal.parseLiteral("pick_trash(can)");
+	public static final Literal tt = Literal.parseLiteral("throw_trash(can)");
+	public static final Literal hot = Literal.parseLiteral("has(owner,trash)");
+	
     public static final Literal af = Literal.parseLiteral("at(robot,fridge)");
     public static final Literal ao = Literal.parseLiteral("at(robot,owner)");
 	public static final Literal ad = Literal.parseLiteral("at(robot,delivery)");
@@ -53,7 +57,7 @@ public class HouseEnv extends Environment {
 		if (lRobot.equals(model.lDelivery)) {
             addPercept("robot", ad);
         }
-        // add beer "status" the percepts  (MODIFICAR PARA QUE VAYA A LA ZONA DE ENTREGA )   
+        // add beer "status" the percepts   
         if (model.fridgeOpen) {
             addPercept("robot", Literal.parseLiteral("stock(beer,"+model.availableBeers+")"));
         }
@@ -62,6 +66,11 @@ public class HouseEnv extends Environment {
             addPercept("robot", hob);
             addPercept("owner", hob);
         }
+		
+		if(model.hasTrash & model.numberCans > 0){
+			addPercept("robot", hot);
+		}
+                          
     }
 
 
@@ -84,6 +93,8 @@ public class HouseEnv extends Environment {
 			} 
 			else if(l.equals("delivery")){
 				dest = model.lDelivery;
+			}else if(l.equals("trash")){
+				dest = model.lTrash;
 			}
 			
 			try {
@@ -104,10 +115,16 @@ public class HouseEnv extends Environment {
 				result = model.getBeer();
 			} 
 			else if (action.equals(hb)) { //hb hand_in(beer)
-				result = model.handInBeer(); 
+				result = model.handInBeer();
+			}
+			else if (action.equals(pt)){ //pt pick_trash(can)  
+			    result = model.pickTrash();    
+			}
+			else if (action.equals(tt)){ //tt throw_trash(can)
+			    result = model.throwTrash();    
 			}
 		}
-		else if (ag.equals("owner")) {
+		else if (ag.equals("owner")) {                   
 			if(action.equals(sb)){
 				result = model.sipBeer();
 			}
