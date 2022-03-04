@@ -14,9 +14,9 @@
    <- !get(beer).
                                                                                                                                                                  
 // if I have not beer finish, in other case while I have beer, sip
-+!drink(beer) : not has(owner,beer) //Why finish? The goal is still there right? DUDA
-   <- true.
-+!drink(beer) //: has(owner,beer)
++!drink(beer) : not has(owner,beer)
+   <- .send(robot,achieve, can_to_trash(can)).
++!drink(beer) : has(owner,beer)
    <- sip(beer);
      !drink(beer).
 

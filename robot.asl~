@@ -18,10 +18,12 @@ same(X,X).
                                       
 +!bring(owner,beer)[source(Ag)] 
    :  available(beer,fridge) & not too_much(beer) & (same(Ag,owner)|same(Ag,self))
-   <- !go_at(robot,fridge);
+   <- .wait(2500);
+   	  !go_at(robot,fridge);
       open(fridge); 
       get(beer);
-      close(fridge); 
+      close(fridge);
+	  .wait(500);
       !go_at(robot,owner);
       hand_in(beer);
       ?has(owner,beer);
@@ -32,8 +34,13 @@ same(X,X).
 +!bring(owner,beer)[source(Ag)]
    :  not available(beer,fridge) & (same(Ag,owner)|same(Ag,self))
    <- //!go_at(robot,delivery);
-   .send(supermarket, achieve, order(beer,3));              
-      !go_at(robot,fridge). // go to fridge and wait there.
+   	  .send(supermarket, achieve, order(beer,3));
+   	  .wait(500);
+      !go_at(robot,delivery);
+	  pick_delivery(beer);// go to delivery and wait there.
+	  .wait(500);
+	  !go_at(robot,fridge);
+	  give_fridge(beer).
                                                                                                                                                    
 +!bring(owner,beer)
    :  too_much(beer) & limit(beer,L) 

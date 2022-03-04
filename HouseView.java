@@ -50,7 +50,7 @@ public class HouseView extends GridWorldView {
                 super.drawAgent(g, x, y, Color.cyan, -1); //Por que todos los IDs son -1?
             }
             g.setColor(Color.black);
-            drawString(g, x, y, defaultFont, "D. Zone");
+            drawString(g, x, y, defaultFont, "D. Zone("+hmodel.deliveredBeers+")");
             break;
 			
 		case HouseModel.TRASH:
@@ -72,6 +72,7 @@ public class HouseView extends GridWorldView {
         if (!lRobot.equals(hmodel.lOwner) && !lRobot.equals(hmodel.lFridge)) {
             c = Color.yellow;
             if (hmodel.carryingBeer) c = Color.orange;
+			if (hmodel.carryingBeer) c = Color.green;
             super.drawAgent(g, x, y, c, -1);
             g.setColor(Color.black);
             super.drawString(g, x, y, defaultFont, "Robot");

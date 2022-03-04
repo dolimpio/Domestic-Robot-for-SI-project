@@ -16,9 +16,12 @@ public class HouseModel extends GridWorldModel {
     boolean fridgeOpen   = false; // whethmer the fridge is open
     boolean carryingBeer = false; // whether the robot is carrying beer
 	boolean carryingTrash = false;
-	boolean onDeliver = false;
+	boolean carryingDelivery = false;
+	boolean delivered = false;
 	boolean hasTrash = false; //whether the owner has a trash can
     int sipCount        = 0; // how many sip the owner did
+	int deliveredBeers = 0;
+	int beerCarrying = 0;
     int availableBeers  = 3; // how many beers are available
 	int numberTrashOwner = 0;
 	int numberTrashCan = 0;
@@ -80,14 +83,6 @@ public class HouseModel extends GridWorldModel {
         }
         return true;
     }
-	
-	/*boolean isAdjacent(Location l1, Location l2){
-		if ((l1.x == l2.x+1 && l1.y == l2.y+1) ||
-		(l1.x == l2.x+1 && l1.y == l2.y+1)||
-		(l1.x == l2.x+1 && l1.y == l2.y+1)){
-			return true;                      
-		}
-	} */      
 
     boolean getBeer() {
         if (fridgeOpen && availableBeers > 0 && !carryingBeer) {
@@ -101,10 +96,11 @@ public class HouseModel extends GridWorldModel {
         }
     }
 
-    boolean addBeer(int n) {//Check this function to send the beers elsewhere PROBAR
-        availableBeers += n;
+    boolean addBeer(int n) {//Check this function to send the beers elsewhere 
+        deliveredBeers +=n;
+		delivered = true;
         if (view != null)
-            view.update(lFridge.x,lFridge.y);
+            view.update(lDelivery.x,lDelivery.y);
         return true;
     }
 
@@ -134,6 +130,29 @@ public class HouseModel extends GridWorldModel {
             return false;
         }
     }
+	boolean pickDelivery(){
+		if(delivered){
+		beerCarrying = deliveredBeers;
+		deliveredBeers = 0;
+		carryingDelivery = true;
+		delivered = false;
+		return true;
+		}else{                    
+			return false;
+		}
+	}
+
+	boolean giveFridge(){
+		if(carryingDelivery){
+			carryingDelivery = false;
+			availableBeers = beerCarrying;
+			beerCarrying = 0;
+			
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	boolean pickTrash(){
 		if(hasTrash){

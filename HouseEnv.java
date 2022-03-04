@@ -18,6 +18,8 @@ public class HouseEnv extends Environment {
 	public static final Literal tt = Literal.parseLiteral("throw_trash(can)");
 	public static final Literal hot = Literal.parseLiteral("has(owner,trash)");
 	
+	public static final Literal pd = Literal.parseLiteral("pick_delivery(beer)");
+	
     public static final Literal af = Literal.parseLiteral("at(robot,fridge)");
     public static final Literal ao = Literal.parseLiteral("at(robot,owner)");
 	public static final Literal ad = Literal.parseLiteral("at(robot,delivery)");
@@ -134,6 +136,9 @@ public class HouseEnv extends Environment {
 			else if (action.equals(tt)){ //tt throw_trash(can)
 			    result = model.throwTrash();    
 			}
+			else if (action.equals(pd)){ //tt pick_delivery(beer)
+			    result = model.pickDelivery();    
+			}
 		}
 		else if (ag.equals("owner")) {                   
 			if(action.equals(sb)){
@@ -147,6 +152,7 @@ public class HouseEnv extends Environment {
 				try {                                                              
 					Thread.sleep(4000);
 					result = model.addBeer( (int)((NumberTerm)action.getTerm(1)).solve());
+					
 				} catch (Exception e) {
 					logger.info("Failed to execute action deliver!"+e);
 				}
