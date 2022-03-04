@@ -18,7 +18,8 @@ same(X,X).
                                       
 +!bring(owner,beer)[source(Ag)] 
    :  available(beer,fridge) & not too_much(beer) & (same(Ag,owner)|same(Ag,self))
-   <- !go_at(robot,fridge);
+   <- .wait(2500);
+   	  !go_at(robot,fridge);
       open(fridge); 
       get(beer);
       close(fridge); 

@@ -77,7 +77,9 @@ public class HouseEnv extends Environment {
         }
 		
 		if(model.hasTrash & model.numberTrashOwner > 0){   
+			//addPercept("robot",Literal.parseLiteral("trashOwner(beer,"+model.numberTrashOwner+")"));
 			addPercept("robot", hot);
+ 
 		}
                                                                    
     }

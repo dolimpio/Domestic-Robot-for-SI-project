@@ -58,7 +58,7 @@ public class HouseView extends GridWorldView {
                 super.drawAgent(g, x, y, Color.green, -1); 
 
             g.setColor(Color.black);
-            drawString(g, x, y, defaultFont, "Trash");
+            drawString(g, x, y, defaultFont, "Trash ("+hmodel.numberTrashCan+")");
             break;  
 		
         }

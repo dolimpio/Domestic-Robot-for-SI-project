@@ -20,7 +20,8 @@ public class HouseModel extends GridWorldModel {
 	boolean hasTrash = false; //whether the owner has a trash can
     int sipCount        = 0; // how many sip the owner did
     int availableBeers  = 3; // how many beers are available
-	int numberTrashOwner = 0; 
+	int numberTrashOwner = 0;
+	int numberTrashCan = 0;
 	
                                                                                                         
     Location lFridge = new Location(0,0);
@@ -136,8 +137,7 @@ public class HouseModel extends GridWorldModel {
 
 	boolean pickTrash(){
 		if(hasTrash){
-			hasTrash = false;
-			numberTrashOwner = 0; 
+			hasTrash = false; 
 			carryingTrash = true;
 		return true;
 		}else{                    
@@ -148,7 +148,8 @@ public class HouseModel extends GridWorldModel {
 	boolean throwTrash(){
 		if(carryingTrash){
 			carryingTrash = false;
-
+			numberTrashCan += numberTrashOwner;
+			numberTrashOwner = 0;
 			return true;
 		}else{
 			return false;
