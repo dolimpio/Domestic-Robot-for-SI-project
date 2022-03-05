@@ -7,45 +7,42 @@ public class HouseModel extends GridWorldModel {
     // constants for the grid objects
     public static final int FRIDGE = 16;
     public static final int OWNER  = 32;
-	public static final int DELIVERYZONE = 64;
-	public static final int TRASH = 128;
-	
+	public static final int TRASH  = 64;
+
     // the grid size
     public static final int GSize = 7;
 
-    boolean fridgeOpen   = false; // whethmer the fridge is open
+    boolean fridgeOpen   = false; // whether the fridge is open
     boolean carryingBeer = false; // whether the robot is carrying beer
-	boolean carryingTrash = false;
-	boolean carryingDelivery = false;
-	boolean delivered = false;
-	boolean hasTrash = false; //whether the owner has a trash can
-    int sipCount        = 0; // how many sip the owner did
-	int deliveredBeers = 0;
-	int beerCarrying = 0;
+    int sipCount        = 0; // how many sip the owner did 
+	int trashInBucket = 0;
     int availableBeers  = 3; // how many beers are available
-	int numberTrashOwner = 0;
-	int numberTrashCan = 0;
-	
-                                                                                                        
+
     Location lFridge = new Location(0,0);
-	Location lDelivery = new Location(1,0);
-	Location lTrash = new Location(0,6);                                   
     Location lOwner  = new Location(GSize-1,GSize-1);
+	Location lTrash  = new Location(0,GSize-1);
+
 
     public HouseModel() {
-        // create a 7x7 grid with one mobile agent                                                               
+        // create a 7x7 grid with one mobile agent
         super(GSize, GSize, 1);
 
         // initial location of robot (column 3, line 3)
         // ag code 0 means the robot
         setAgPos(0, GSize/2, GSize/2);
 
-        // initial location of fridge, owner and supermarket
-		add(DELIVERYZONE, lDelivery);
-		add(TRASH, lTrash);
+        // initial location of fridge and owner
         add(FRIDGE, lFridge);
         add(OWNER, lOwner);
+		add(TRASH, lTrash);
     }
+
+	boolean trashToBucket(){
+		 trashInBucket++;
+		 if (view != null)
+            view.update(lTrash.x,lTrash.y);
+		 return true;
+	}
 	
     boolean openFridge() {
         if (!fridgeOpen) {
@@ -64,9 +61,8 @@ public class HouseModel extends GridWorldModel {
             return false;
         }
     }
-	
 
-    boolean moveTowards(Location dest) throws InterruptedException {
+    boolean moveTowards(Location dest) {
         Location r1 = getAgPos(0);
         if (r1.x < dest.x)        r1.x++;
         else if (r1.x > dest.x)   r1.x--;
@@ -76,10 +72,9 @@ public class HouseModel extends GridWorldModel {
 
         // repaint the fridge and owner locations
         if (view != null) {
-			view.update(lDelivery.x,lDelivery.y);
             view.update(lFridge.x,lFridge.y);
             view.update(lOwner.x,lOwner.y);
-			view.update(lTrash.x,lTrash.y);                
+			view.update(lTrash.x,lTrash.y);
         }
         return true;
     }
@@ -88,7 +83,7 @@ public class HouseModel extends GridWorldModel {
         if (fridgeOpen && availableBeers > 0 && !carryingBeer) {
             availableBeers--;
             carryingBeer = true;
-            if (view != null)                                                            
+            if (view != null)
                 view.update(lFridge.x,lFridge.y);
             return true;
         } else {
@@ -96,18 +91,17 @@ public class HouseModel extends GridWorldModel {
         }
     }
 
-    boolean addBeer(int n) {//Check this function to send the beers elsewhere 
-        deliveredBeers +=n;
-		delivered = true;
+    boolean addBeer(int n) {
+        availableBeers += n;
         if (view != null)
-            view.update(lDelivery.x,lDelivery.y);
+            view.update(lFridge.x,lFridge.y);
         return true;
     }
 
     boolean handInBeer() {
         if (carryingBeer) {
             sipCount = 10;
-            carryingBeer = false; 
+            carryingBeer = false;
             if (view != null)
                 view.update(lOwner.x,lOwner.y);
             return true;
@@ -119,59 +113,11 @@ public class HouseModel extends GridWorldModel {
     boolean sipBeer() {
         if (sipCount > 0) {
             sipCount--;
-			if (sipCount == 0){
-				numberTrashOwner++;
-				hasTrash = true; 
-			}
             if (view != null)
-                view.update(lOwner.x,lOwner.y);		
+                view.update(lOwner.x,lOwner.y);
             return true;
-        } else { 
+        } else {
             return false;
         }
     }
-	boolean pickDelivery(){
-		if(delivered){
-		beerCarrying = deliveredBeers;
-		deliveredBeers = 0;
-		carryingDelivery = true;
-		delivered = false;
-		return true;
-		}else{                    
-			return false;
-		}
-	}
-
-	boolean giveFridge(){
-		if(carryingDelivery){
-			carryingDelivery = false;
-			availableBeers = beerCarrying;
-			beerCarrying = 0;
-			
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	boolean pickTrash(){
-		if(hasTrash){
-			hasTrash = false; 
-			carryingTrash = true;
-		return true;
-		}else{                    
-			return false;
-		}
-	}
-
-	boolean throwTrash(){
-		if(carryingTrash){
-			carryingTrash = false;
-			numberTrashCan += numberTrashOwner;
-			numberTrashOwner = 0;
-			return true;
-		}else{
-			return false;
-		}
-	}
 }

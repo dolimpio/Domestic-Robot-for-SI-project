@@ -25,15 +25,14 @@ public class HouseView extends GridWorldView {
         super.drawAgent(g, x, y, Color.lightGray, -1);
         switch (object) {
         case HouseModel.FRIDGE:
-            if (lRobot.x == hmodel.lFridge.x+1 && lRobot.y == hmodel.lFridge.y+1) {
+            if (lRobot.equals(hmodel.lFridge)) {
                 super.drawAgent(g, x, y, Color.yellow, -1);
             }
             g.setColor(Color.black);
             drawString(g, x, y, defaultFont, "Fridge ("+hmodel.availableBeers+")");
-            break;
-			
-        case HouseModel.OWNER:
-            if (lRobot.x == hmodel.lOwner.x-1 && lRobot.y == hmodel.lOwner.y-1) {
+            break;                                                                         
+        case HouseModel.OWNER:                                                             
+            if (lRobot.equals(hmodel.lOwner)) {
                 super.drawAgent(g, x, y, Color.yellow, -1);
             }
             String o = "Owner";
@@ -43,26 +42,14 @@ public class HouseView extends GridWorldView {
             g.setColor(Color.black);
             drawString(g, x, y, defaultFont, o);
             break;
-			
-		case HouseModel.DELIVERYZONE:
-
-            if (lRobot.x == hmodel.lDelivery.x && lRobot.y == hmodel.lDelivery.y+1) { // Se pone de color amarillo cuando se encuentra en supermarket
-                super.drawAgent(g, x, y, Color.cyan, -1); //Por que todos los IDs son -1?
+			case HouseModel.TRASH:
+            if (lRobot.equals(hmodel.lTrash)) { 
+                super.drawAgent(g, x, y, Color.green, -1);
             }
             g.setColor(Color.black);
-            drawString(g, x, y, defaultFont, "D. Zone("+hmodel.deliveredBeers+")");
-            break;
-			
-		case HouseModel.TRASH:
-
-                super.drawAgent(g, x, y, Color.green, -1); 
-
-            g.setColor(Color.black);
-            drawString(g, x, y, defaultFont, "Trash ("+hmodel.numberTrashCan+")");
-            break;  
-		
+            drawString(g, x, y, defaultFont, "Trash ("+hmodel.trashInBucket+")");
+            break;                                                                         
         }
-	
         repaint();
     }
 
@@ -72,7 +59,6 @@ public class HouseView extends GridWorldView {
         if (!lRobot.equals(hmodel.lOwner) && !lRobot.equals(hmodel.lFridge)) {
             c = Color.yellow;
             if (hmodel.carryingBeer) c = Color.orange;
-			if (hmodel.carryingBeer) c = Color.green;
             super.drawAgent(g, x, y, c, -1);
             g.setColor(Color.black);
             super.drawString(g, x, y, defaultFont, "Robot");

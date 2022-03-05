@@ -1,22 +1,25 @@
-
-
 /* Initial goals */
-                                                               
-!get(beer).   // initial goal: get a beer                      
-!check_bored. // initial goal: verify whether I am getting bored 
-      
-+!get(beer) : true                                             
+
+!get(beer).   // initial goal: get a beer
+!check_bored. // initial goal: verify whether I am getting bored
+
++!get(beer) : true
    <- .send(robot, achieve, bring(owner,beer)).
 
 +has(owner,beer) : true
    <- !drink(beer).
+   
 -has(owner,beer) : true
-   <- !get(beer).
-                                                                                                                                                                 
+   <-.send(robot, tell ,has(owner,trash));
+   .send(robot, achieve,recoger_basura(trash));
+   .print("Thank you. Could you get me some more beer?");
+   !get(beer).
+   
 // if I have not beer finish, in other case while I have beer, sip
 +!drink(beer) : not has(owner,beer)
-   <- .send(robot,achieve, can_to_trash(can)).
-+!drink(beer) : has(owner,beer)
+   <- true.
+   
++!drink(beer) //: has(owner,beer)
    <- sip(beer);
      !drink(beer).
 
@@ -25,7 +28,6 @@
       .send(robot, askOne, time(_), R); // when bored, I ask the robot about the time
       .print(R);
       !check_bored.
-
 
 +msg(M)[source(Ag)] : true
    <- .print("Message from ",Ag,": ",M);
