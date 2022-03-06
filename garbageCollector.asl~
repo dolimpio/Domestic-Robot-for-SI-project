@@ -1,0 +1,7 @@
++!take_trash : trash(full)
+	<- empty_trash(trash);
+	-trash(full);
+	.print("Trash has been emptied").          
+
++!take_trash : not trash(full) 
+	<- !take_trash.                                    

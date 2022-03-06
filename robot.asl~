@@ -31,7 +31,7 @@ too_much(B) :-
       +consumed(YY,MM,DD,HH,NN,SS,beer).
 
 +!bring(owner,beer)
-   :  not available(beer,fridge) & not trash(pending)   
+   :  not available(beer,fridge) & not trash(pending)
    <- .send(supermarket, achieve, order(beer,3));
       !go_at(robot,fridge). // go to fridge and wait there.
 
@@ -41,6 +41,9 @@ too_much(B) :-
               " beers a day! I am very sorry about that!",M);
       .send(owner,tell,msg(M)).
 
++!bring(owner, beer) : trash(pending)
+	<- !bring(owner, beer).
+
 -!bring(_,_)
    :  true 
    <- .current_intention(I);
@@ -48,18 +51,21 @@ too_much(B) :-
 	  
 +!recoger_basura(trash) 
 	: has(owner, trash) & not beer(pending) & not has(owner,beer)
-	<- .print("Me voy a encargar de esa lata!");
-	-has(owner, trash);
+	<- +trash(pending);
+	.print("Me voy a encargar de esa lata!");
+	-has(owner, trash)[source(owner)];
 	+has(robot, trash);
 	!tirar_al_cubo(trash).
 
 +!tirar_al_cubo(trash)
-	: has(robot, trash) & not beer(done)
-	<- +trash(pending);
-	!go_at(robot,trash);
-	throw_at_bucket(trash);
+	: has(robot, trash) & not beer(done) //quitar
+	<- !go_at(robot,trash);
+	to_bucket(trash);
+	-has(robot, trash);
 	.print("Basura en el cubo! Ahora te llevo más cerveza.");
 	-trash(pending).
+
+
 
 +!go_at(robot,P) : at(robot,P) <- true.
 +!go_at(robot,P) : not at(robot,P)

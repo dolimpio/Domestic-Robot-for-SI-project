@@ -36,9 +36,19 @@ public class HouseModel extends GridWorldModel {
         add(OWNER, lOwner);
 		add(TRASH, lTrash);
     }
-
+	
+	boolean emptyTrash(){
+		if(trashInBucket = 5)
+			trashInBucket = 0;
+		 if (view != null)
+            view.update(lTrash.x,lTrash.y);
+		 return true;
+	}
+	
 	boolean trashToBucket(){
 		 trashInBucket++;
+		 if (view != null)
+            view.update(lTrash.x,lTrash.y);
 		 return true;
 	}
 	
@@ -72,6 +82,7 @@ public class HouseModel extends GridWorldModel {
         if (view != null) {
             view.update(lFridge.x,lFridge.y);
             view.update(lOwner.x,lOwner.y);
+			view.update(lTrash.x,lTrash.y);
         }
         return true;
     }

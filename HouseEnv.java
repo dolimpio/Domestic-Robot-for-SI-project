@@ -18,7 +18,8 @@ public class HouseEnv extends Environment {
 	public static final Literal at = Literal.parseLiteral("at(robot,trash)");
 	
 	public static final Literal tb = Literal.parseLiteral("to_bucket(trash)");
-
+	public static final Literal tf = Literal.parseLiteral("trash(full)");
+	public static final Literal et = Literal.parseLiteral("empty_trash(trash)");
     static Logger logger = Logger.getLogger(HouseEnv.class.getName());
 
     HouseModel model; // the model of the grid
@@ -40,7 +41,8 @@ public class HouseEnv extends Environment {
         // clear the percepts of the agents
         clearPercepts("robot");
         clearPercepts("owner");
-
+        clearPercepts("garbageCollector");
+		
         // get the robot location
         Location lRobot = model.getAgPos(0);
 
@@ -65,6 +67,10 @@ public class HouseEnv extends Environment {
             addPercept("robot", hob);
             addPercept("owner", hob);
         }
+		
+		if(model.trashInBucket == 5){
+			addPercept("garbageCollector", tf);      
+		}
     }
 
 
@@ -104,7 +110,10 @@ public class HouseEnv extends Environment {
         } else if (action.equals(sb)) {
             result = model.sipBeer();
 
-        } else if (action.getFunctor().equals("deliver")) {
+        } else if (action.equals(et)){
+			result = model.emptyTrash();
+			
+		}else if (action.getFunctor().equals("deliver")) {
             // wait 4 seconds to finish "deliver"
             try {
                 Thread.sleep(4000);

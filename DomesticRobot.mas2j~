@@ -9,7 +9,5 @@ MAS domestic_robot {
     agents: robot;
             owner;
             supermarket;
-			supermarket1;
-			supermarket2;
 			garbageCollector;
 }
