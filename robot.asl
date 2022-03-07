@@ -5,7 +5,6 @@ available(beer,fridge).
 
 // my owner should not consume more than 10 beers a day :-)
 limit(beer,15).
-money(5).
 
 same(X,X).
 
@@ -14,7 +13,6 @@ too_much(B) :-
    .count(consumed(YY,MM,DD,_,_,_,B),QtdB) &
    limit(B,Limit) &
    QtdB > Limit.
-
 
 /* Plans */
 
@@ -34,12 +32,22 @@ too_much(B) :-
       +consumed(YY,MM,DD,HH,NN,SS,beer).
 
 +!bring(owner,beer)
-   :  not available(beer,fridge) & not trash(pending) 
+   :  not available(beer,fridge) & not trash(pending) & have(money)
    <-!select_supermarket;
    ?best_price(Supermarket);
-   .send(Supermarket, achieve, order(beer,3)); 
+   .send(Supermarket, achieve, order(beer,3));
+   ?money(Current);
+   ?offer(Supermarket, Price);
+   New = Current - (3*Price);
+   -+money(New)[source(owner)];
     !go_at(robot,fridge). // go to fridge and wait there.  
-	
+
++!bring(owner,beer)
+   :  not available(beer,fridge) & not trash(pending) & not have(money)
+   <- !select_supermarket;
+   .send(owner, achieve, give_money);
+   !bring(owner,beer).
+
 	
 // the robot selects the cheaper supermarket	                     
 +!select_supermarket : offer(supermarket,X) & offer(supermarket1,Y) & offer(supermarket2,Z)
@@ -88,7 +96,27 @@ too_much(B) :-
 +!go_at(robot,P) : not at(robot,P)
   <- move_towards(P);
      !go_at(robot,P).
++?frase1 <-
+	.print("Vale, cuentame Que tal el dia?");
+//	.print("Te ha entrenido?");
+	.send(owner, askOne, respuesta1).
 
++?frase2 <-
+	.print("Quieres que avise al 112?");
+	.send(owner, askOne, respuesta2).
+	
++?frase3 <-
+	.print("Vale, bueno voy a seguir trabajando, chao");
+	.send(owner, askOne, respuesta3).
+	
++?frase4 <-
+	.print("Ya ha acabado hace un rato, tienes que ir a tenderla");
+	.send(owner, askOne, respuesta4).
+	
++?frase5 <-
+	.print("Como tu veas.").
+	
+	 
 // when the supermarket makes a delivery, try the 'has' goal again
 +delivered(beer,_Qtd,_OrderId)[source(Ag)]  
   :  same(Ag, supermarket) | same(Ag, supermarket1) | same(Ag, supermarket2)                                   
@@ -103,6 +131,10 @@ too_much(B) :-
 +stock(beer,N)
    :  N > 0 & not available(beer,fridge)
    <- -+available(beer,fridge).
+
+
++money(X) <- +have(money).
++money(X): best_price(Supermarket) & offer(Supermarket, Price)& X<Price <- -have(money).
 
 +?time(T) : true
   <-  time.check(T).

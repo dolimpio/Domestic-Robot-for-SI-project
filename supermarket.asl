@@ -3,27 +3,26 @@ budget(6).
 warehouse_price(beer, 1).
 stock(beer,3).
 available(beer,store).
-beer_price(2).
+offer(supermarket,1).
 profit(0).                                                                                                    
 
 !marketing_plan.
                                            
 
 //the supermarket sends the price to the robot   
-+!marketing_plan <- .send(robot, tell, offer(supermarket,2)).
++!marketing_plan : offer(supermarket, N) <- .send(robot, tell, offer(supermarket,N)).
 
 // plan to achieve the goal "order" for agent Ag
-+!order(Product,Qtd)[source(Ag)] : available(beer, store)
++!order(Product,Qtd)[source(Ag)] : available(beer, store) & profit(Money) & offer(supermarket,Price)
   <- ?stock(beer, Remaining);
   	Available = Remaining - 3;
 	-+stock(beer,Available);
-	?profit(Money);
-	?beer_price(Price);
 	Profit = Money + (3*Price);
 	-+profit(Profit);
   	?last_order_id(N);
      OrderId = N + 1;
      -+last_order_id(OrderId);
+	 !rise_price;
      deliver(Product,Qtd);
      .send(Ag, tell, delivered(Product,Qtd,OrderId)).
 
@@ -40,7 +39,7 @@ profit(0).
 	NewAmount = Amount - (3*Price);
 	-+stock(Product, 3);
 	-+budget(NewAmount);
-	+available(Product, store).                              
+	+available(Product, store).
 	
 // when the robot has no more budget, it uses the profit the agent has won 
 +!fill_stock(Product,Qtd) : not available(Product, store) & not available(budget, store)
@@ -50,6 +49,19 @@ profit(0).
 	-+budget(Money);
 	+available(budget, store);
 	!fill_stock(Product,Qtd). //Modificar esto luego para añadir budget
+
+// rises the price on each order, this way the robot has to choose the cheaper supermarket
++!rise_price : offer(supermarket, P) & P < 18
+	<-?offer(supermarket,Current);
+	New = Current + 1;
+	-+offer(supermarket,New).
+	
+// when the price is to high, the supermarket lowers the price
++!rise_price : offer(supermarket, N) & N >= 18
+	<-?offer(supermarket,Current);
+	New = Current - 1;
+	-+offer(supermarket,New).
+	
 
 +stock(beer,0)
    :  available(beer,store)
