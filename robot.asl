@@ -13,6 +13,13 @@ too_much(B) :-
    QtdB > Limit.
 
 same(X,X).
+
+//+!doHouseWork.
+
+//+!doHouseWork <- !dialogWithOwner.
+//+!doHouseWork <- !cleanHouse.
+//+!doHouseWork <- !goAtPlace. //Supongo que este objetivo se tiene que añadir que el robot esquive obstaculos
+//+!doHouseWork <- !manageBeer.
                   
 /* Plans */                                                        
                                       
@@ -51,6 +58,16 @@ same(X,X).
   <- move_towards(P);
      !go_at(robot,P). 
             
+/*
++!dialogWithOwner : msg(Msg)[source(Ag)] <-
+	bot.chat(Msg,Answer);
+	-msg(Msg)[source(Ag)];
+	.send(Ag,tell,answer(Answer));
+	.println("Robot ha recibido el mensaje: ",Msg," de ",Ag);
+	!dialogWithOwner.
++!dialogWithOwner <- !dialogWithOwner.
+*/
+
 // when the supermarket makes a delivery, try the 'has' goal again
 +delivered(beer,_Qtd,_OrderId)[source(supermarket)]                                          
   :  true                      

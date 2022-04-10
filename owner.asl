@@ -1,8 +1,16 @@
 /* Initial goals */
 
-!get(beer).   // initial goal: get a beer
+//!cheerUp. //Main goal for 'Owner'
+
 !check_bored. // initial goal: verify whether I am getting bored
-      
+
+/*
+!cheerUp <- !talkRobot. //Por ahora el plan esta incompleto
+!cheerUp <- !cleanHouse.
+!cheerUp <- !drinkBeer.
+!cheerUp <- !wakeUp.
+*/
+!drinkBeer <- !get(beer).
 +!get(beer) : true                                             
    <- .send(robot, achieve, bring(owner,beer)).
 
@@ -23,6 +31,12 @@
       .send(robot, askOne, time(_), R); // when bored, I ask the robot about the time
       .print(R);
       !check_bored.
+	  
++!talkRobot <-
+	.println("Owner esta aburrido y le dice Hola al Robot");
+	.send(myRobot,tell,msg("Hola!!"));
+	.wait(answer(Answer));
+	.send(myRobot,tell,msg("Estoy bien")).
 
 +msg(M)[source(Ag)] : true
    <- .print("Message from ",Ag,": ",M);

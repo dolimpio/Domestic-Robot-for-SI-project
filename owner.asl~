@@ -17,7 +17,7 @@
 +!drink(beer) //: has(owner,beer)
    <- sip(beer);
      !drink(beer).
-
+  
 +!check_bored : true
    <- .random(X); .wait(X*5000+2000);   // i get bored at random times
       .send(robot, askOne, time(_), R); // when bored, I ask the robot about the time

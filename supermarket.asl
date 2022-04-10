@@ -1,5 +1,12 @@
 last_order_id(1). // initial belief
 
+//+!makeMoney.
+//+!makeMoney <- !buyBeer.
+//+!makeMoney <- !sellBeer.
+//+!makeMoney <- !offerBeer.
+//+!makeMoney <- !manageOrders.
+
+
 // plan to achieve the goal "order" for agent Ag
 +!order(Product,Qtd)[source(Ag)] : true
   <- ?last_order_id(N);
